@@ -1,13 +1,12 @@
 package ui;
 
 import java.util.Scanner;
-import java.sql.SQLOutput;
 
-public class cli {
+public class Cli {
     Scanner scan;
 
 
-    public cli() {
+    public Cli() {
         this.scan = new Scanner(System.in);
     }
 
