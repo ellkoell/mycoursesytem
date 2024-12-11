@@ -9,8 +9,8 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
         try {
-            Cli mycli = new Cli(new MySqlCourseRepository());
-            mycli.start();
+            Cli myCli = new Cli(new MySqlCourseRepository());
+            myCli.start();
         } catch (SQLException e) {
             System.out.println("Datenbankfehler: " + e.getMessage() + "SQL State" + e.getSQLState());
         } catch (ClassNotFoundException e) {

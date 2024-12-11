@@ -99,11 +99,12 @@ throw new InvalidValueException("Anzahl der Kursstunden pro Kurs darf zwischen 1
     public void setEndDate(Date endDate)throws InvalidValueException  {
         if (endDate != null) {
             if (this.beginDate != null) {
-                if(endDate.before(this.beginDate)){
+                if (endDate.after(this.beginDate)) {
                     this.endDate = endDate;
-                }else {
-                    throw new InvalidValueException("Kursende muss VOR Kursbeginn sein!");
+                } else {
+                    throw new InvalidValueException("Kursende muss NACH Kursbeginn sein!");
                 }
+
             }else{
                 this.endDate = endDate;
             }
