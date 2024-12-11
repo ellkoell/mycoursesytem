@@ -80,12 +80,14 @@ public class MySqlCourseRepository implements MyCourseRepository{
 
 
                 );
-                return courseList;
+
+
             }
+            return courseList;
         } catch (SQLException e) {
            throw new DatabaseException("Database error occured!");
         }
-        return null;
+
     }
 
     @Override

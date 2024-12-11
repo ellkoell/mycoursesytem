@@ -37,7 +37,7 @@ Das Singleton-Pattern stellt sicher, dass eine Klasse nur eine Instanz hat. Bei 
 
 ### 1. Neue Klasse erstellen
 
-Erstellt eine Klasse `MySQLDatabaseConnection` in einem Package, z. B. `dataaccess`.
+Habe eine Klasse namens `MySQLDatabaseConnection` erstellt in dem Package`dataaccess`.
 
 Codeauszug:
 
@@ -62,10 +62,43 @@ public class MyS`QLDatabaseCo`nnection {
 
 ````
 
-## Fazit
-Ich habe gelernt:
-1. Wie JDBC funktioniert und wie das DAO-Pattern hilft.
-2. Wie man eine Datenbank und ein Maven-Projekt einrichtet.
-3. Wie man mit Singleton effizient eine Verbindung zur Datenbank aufbaut.
+## Video 4: Datenbankverbindung mit Kommandozeilen-Interfaces (CLI) 
+
+# Kommandozeilen-Interface (CLI) in Java erstellen
 
 
+
+## 1. Klasse und Scanner einrichten
+
+Klasse namens `CLI` erstellen, in dieser Klasse nutzen wir dann den Scanner, um Benutzereingaben von der Konsole zu lesen.
+```java
+import java.util.Scanner;
+
+public class CLI {
+    private Scanner scanner;
+
+    public CLI() {
+        this.scanner = new Scanner(System.in); 
+    }
+}
+```
+## die Startmethode
+```java
+public void start() {
+String input;
+do {
+showMenu(); // Menü anzeigen
+input = scanner.nextLine(); // Eingabe lesen
+handleInput(input); // Eingabe verarbeiten
+} while (!input.equalsIgnoreCase("x")); // Schleife beenden bei "x"
+scanner.close(); // Scanner schließen
+System.out.println("Auf Wiedersehen!");
+}
+````
+## Aufbau des CLI
+1. **Scanner verwenden:** 
+2. **do-while-Schleife:** 
+3. **Switch-Case-Struktur:** 
+4. **Fehlerbehandlung:** 
+
+## Video 5: Datenbankverbindung mit Kommandozeilen-Interfaces (CLI) 
