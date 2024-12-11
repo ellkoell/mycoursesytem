@@ -129,13 +129,13 @@ throw new InvalidValueException("Anzahl der Kursstunden pro Kurs darf zwischen 1
     @Override
     public String toString() {
         return "Course{" +
-                "id=xxx" +
-                ", courseType=" + courseType +
+                "id=" + this.getId() + '\'' +
+        ", courseType=" + courseType +'\''+
                 ", endDate=" + endDate +
                 ", beginDate=" + beginDate +
                 ", hours=" + hours +
                 ", description='" + description + '\'' +
-                ", name='" + name + '\'' +
+                ", name='" + name +  +
                 '}';
     }
 }
