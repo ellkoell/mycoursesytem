@@ -52,8 +52,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
     public Optional<Course> insert(Course entity) {
         Assert.notNull(entity);
 
-        try
-        {
+        try {
             String sql = "INSERT INTO `courses` (`name`, `description`, `hours`, `begindate`, `enddate`, `coursetype`) VALUES ( ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, entity.getName());
@@ -65,19 +64,17 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
             int affectedRows = preparedStatement.executeUpdate();
 
-            if (affectedRows == 0)
-            {
+            if (affectedRows == 0) {
                 return Optional.empty();
             }
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()){
+            if (generatedKeys.next()) {
                 return this.getbyId(generatedKeys.getLong(1));
-            }else {
+            } else {
                 return Optional.empty();
             }
-        }catch (SQLException sqlException)
-        {
+        } catch (SQLException sqlException) {
             throw new DatabaseException(sqlException.getMessage());
         }
 
@@ -106,10 +103,10 @@ public class MySqlCourseRepository implements MyCourseRepository {
                         resultSet.getDate("enddate"),
                         CourseType.valueOf(resultSet.getString("coursetype"))
                 );
-                return  Optional.of(course);
+                return Optional.of(course);
 
 
-            } catch(SQLException sqlException) {
+            } catch (SQLException sqlException) {
                 throw new DatabaseException(sqlException.getMessage());
 
             }
@@ -164,23 +161,39 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
     @Override
     public Optional<Course> update(Course entity) {
-        return Optional.empty();
+
+        Assert.notNull(entity);
+
+        String sql = "UPDATE `courses` SET `name` = ?, `description` = ?, `hours` = ?, `begindate` = ?, `enddate` = ?, `coursetype` = ? WHERE `courses`.`id` = ? ";
+
+        if (countCoursesInDbWithId(entity.getId()) == 0) {
+            return Optional.empty();
+
+        } else {
+            try {
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setString(1, entity.getName());
+                preparedStatement.setString(2, entity.getDescription());
+                preparedStatement.setInt(3, entity.getHours());
+                preparedStatement.setDate(4, entity.getBeginDate());
+                preparedStatement.setDate(5, entity.getEndDate());
+                preparedStatement.setString(6, entity.getCourseType().toString());
+                preparedStatement.setLong(7, entity.getId());
+
+                int affectedRows = preparedStatement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    return Optional.empty();
+                } else {
+                    return this.getbyId(entity.getId());
+                }
+            } catch (SQLException sqlException) {
+                throw new DatabaseException(sqlException.getMessage());
+            }
+        }
+
     }
 
-//    @Override
-//    public Optional<Course> update(Course entity) {
-//        Assert.notNull(id);
-//        if (countCoursesInDbWithId(id) == 0) {
-//            return Optional.empty();
-//        } else {
-//            String sql = "SELECT * FROM `courses` WHERE `id` = ?";
-//            PreparedStatement preparedStatement = con.prepareStatement(sql);
-//            preparedStatement.setLong(1, id);
-//            ResultSet resultSet = preparedStatement.executeQuery();
-//
-//        }
-//
-//    }
 
     @Override
     public void deletebyId(Long id) {
