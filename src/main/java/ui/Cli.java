@@ -38,6 +38,9 @@ public class Cli {
                 case "4":
                     updateCourseDetails();
                     break;
+                case "5":
+                    deleteCourse();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen");
                     break;
@@ -188,13 +191,29 @@ public class Cli {
     private void showMenue() {
         System.out.println("----------------------------------KURSMANAGEMENT------------------------------------");
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t" + "(3) Kursdetails anzeigen");
-        System.out.println("(4) Kursdetails ändern \t (-) xxx \t" + "(-) xxx");
+        System.out.println("(4) Kursdetails ändern \t (5) Kurs löschen \t" + "(-) xxx");
         System.out.println("(x) ENDE");
     }
 
     private void inputError() {
         System.out.println("Bitte nur die Zahlen der Menüauswahl eingeben!");
     }
+
+
+
+    private void deleteCourse() {
+        System.out.println("Welchen Kurs möchten sie löschen? Bitte ID eingeben: ");
+        Long courseIdToDelete = Long.parseLong(scan.nextLine());
+
+        try{
+            repo.deletebyId(courseIdToDelete);
+            System.out.println("Kurs mit ID " + courseIdToDelete + " gelöscht!");
+        }catch(DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim löschen: " + databaseException.getMessage());
+        }catch(Exception e){
+            System.out.println("Unbekannter Fehler beim Löschen: " + e.getMessage());
+}
+}
 }
 
 
