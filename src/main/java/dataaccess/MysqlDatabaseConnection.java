@@ -19,4 +19,4 @@ public class MysqlDatabaseConnection {
         return con;
     }
 
-    }
+}
