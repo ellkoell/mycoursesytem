@@ -44,6 +44,9 @@ public class Cli {
                 case "6":
                     courseSearch();
                     break;
+                case "7":
+                    runningCourses();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen");
                     break;
@@ -195,6 +198,7 @@ public class Cli {
         System.out.println("----------------------------------KURSMANAGEMENT------------------------------------");
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t" + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurs löschen \t" + "(6) Kurssuche");
+        System.out.println("(7) Laufende Kurse \t (-) ---\t" + "(-)---");
         System.out.println("(x) ENDE");
     }
 
@@ -219,7 +223,7 @@ public class Cli {
 }
 
     private void courseSearch() {
-        System.out.println("Geben Sie einen Suchbergiff an!");
+        System.out.println("Geben Sie einen Suchbegriff an!");
         String searchString = scan.nextLine();
         List<Course> courseList;
         try{
@@ -230,12 +234,30 @@ public class Cli {
 
         }
         catch (DatabaseException databaseException){
-            System.out.println("Datenbanfehler bei der Kurssuche: "+databaseException.getMessage());
+            System.out.println("Datenbankfehler bei der Kurssuche: "+databaseException.getMessage());
 
         }
         catch (Exception exception){
 
-            System.out.println("Ubenkannter Fehler bei der Kurssuche: "+exception.getMessage());
+            System.out.println("Unbekannter Fehler bei der Kurssuche: "+exception.getMessage());
+}
+}
+
+    private void runningCourses() {
+        System.out.println("Aktuell laufende Kurse: ");
+        List<Course> list;
+        try{
+            list = repo.findAllRunningCourses();
+            for(Course course : list){
+                System.out.println(course);
+            }
+        }
+        catch (DatabaseException databaseException){
+            System.out.println("Datenbankfehler bei Kursanzeige für laufende  Kurse: "+databaseException.getMessage());
+
+        }
+        catch (Exception exception){
+            System.out.println("Unbekannter Fehler bei Kursanzeige für laufende Kurse: "+ exception.getMessage());
 }
 }
 }
