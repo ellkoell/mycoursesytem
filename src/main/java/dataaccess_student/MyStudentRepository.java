@@ -1,11 +1,16 @@
 package dataaccess_student;
 
+import dataaccess.BaseRepository;
 import domain_student.Student;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface MyStudentRepository extends BaseRepository<Student> {
-    Student findByName(String name);
-    Student findByGeburtsjahr(int year);
-    List<Student> findBetweenGeburtsdatum(String startDate, String endDate);
+public interface MyStudentRepository extends BaseRepository<Student,Long> {
+
+    List <Student> findStudentByName(String searchText);
+
+
+    List <Student> findStudentByGeburtsjahr(int year);
+
 }

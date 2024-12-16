@@ -1,14 +1,25 @@
 package domain_student;
 
-public class Student {
-    private int studentId;
+import domain.BaseEntity;
+import domain.InvalidValueException;
+
+import java.sql.Date;
+
+public class Student extends BaseEntity {
     private String vorname;
     private String nachname;
-    private String geburtsdatum; // Format: YYYY-MM-DD
+    private Date geburtsdatum;
 
 
-    public Student(int studentId, String vorname, String nachname, String geburtsdatum) {
-        this.studentId = studentId;
+    public Student(Long id, String vorname, String nachname, Date geburtsdatum) throws InvalidValueException {
+        super(id);
+        setVorname(vorname);
+        setNachname(nachname);
+        setGeburtsdatum(geburtsdatum);
+    }
+
+    public Student(String vorname, String nachname, Date geburtsdatum) throws InvalidValueException {
+        super(null);
         setVorname(vorname);
         setNachname(nachname);
         setGeburtsdatum(geburtsdatum);
@@ -16,48 +27,58 @@ public class Student {
 
 
 
-    public int getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(int studentId) {
-        if (studentId <= 0) {
-            throw new IllegalArgumentException("Die Student-ID muss positiv sein.");
-        }
-        this.studentId = studentId;
-    }
-
     public String getVorname() {
         return vorname;
     }
 
-    public void setVorname(String vorname) {
-        if (vorname == null || vorname.trim().isEmpty()) {
-            throw new InvalidNameException("Der Vorname darf nicht leer sein.");
+    public void setVorname(String vorname) throws InvalidValueException {
+        if(vorname!=null&&vorname.length()>3){
+            this.vorname = vorname;
+        }else{
+            throw new IllegalArgumentException("Vorname muss mindestens 3 Zeichen lang sein");
         }
-        this.vorname = vorname;
+
     }
+
+    public void setNachname(String nachname) throws InvalidValueException {
+        if(nachname!=null&&nachname.length()>3){
+            this.nachname = nachname;
+        }else{
+            throw new IllegalArgumentException("Nachname muss mindestens 3 Zeichen lang sein");
+        }
+
+    }
+
+
+
 
     public String getNachname() {
         return nachname;
     }
 
-    public void setNachname(String nachname) {
-        if (nachname == null || nachname.trim().isEmpty()) {
-            throw new InvalidNameException("Der Nachname darf nicht leer sein.");
-        }
-        this.nachname = nachname;
-    }
 
-    public String getGeburtsdatum() {
+
+    public Date getGeburtsdatum() {
         return geburtsdatum;
     }
 
-    public void setGeburtsdatum(String geburtsdatum) {
-        if (!geburtsdatum.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            throw new InvalidDateException("Das Geburtsdatum muss im Format YYYY-MM-DD sein.");
+    public void setGeburtsdatum(Date geburtsdatum) throws InvalidValueException {
+        if (geburtsdatum == null) {
+            throw new InvalidValueException("Geburtsdatum darf nicht null oder leer sein!");
         }
-        this.geburtsdatum = geburtsdatum;
+
+
+        Date referenceDate = Date.valueOf("2011-09-01");
+
+        if (this.geburtsdatum != null) {
+            if (geburtsdatum.before(referenceDate)) {
+                this.geburtsdatum = Date.valueOf(String.valueOf(geburtsdatum));
+            } else {
+                throw new InvalidValueException("Geburtsdatum muss vor dem 1. September 2011 liegen!");
+            }
+        } else {
+            this.geburtsdatum = Date.valueOf(String.valueOf(geburtsdatum));
+        }
     }
 
 
@@ -77,7 +98,7 @@ public class Student {
     @Override
     public String toString() {
         return "Student{" +
-                "studentId=" + studentId +
+                "studentId=" + this.getId() +
                 ", vorname='" + vorname + '\'' +
                 ", nachname='" + nachname + '\'' +
                 ", geburtsdatum='" + geburtsdatum + '\'' +

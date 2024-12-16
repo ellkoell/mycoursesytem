@@ -46,27 +46,28 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
 
     @Override
-    public Optional<Course> insert(Course entity) {
+    public Optional<Course> insert(Course entity) { //muss implementiert werden, weil mycourserepository von baserepository erbt
         Assert.notNull(entity);
 
         try {
+            //Code für das Einfügen von Kursen
             String sql = "INSERT INTO `courses` (`name`, `description`, `hours`, `begindate`, `enddate`, `coursetype`) VALUES ( ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, entity.getName());
+            preparedStatement.setString(1, entity.getName()); //? Platzhalter werden mit Werten aus dem entity objekt ersetzt
             preparedStatement.setString(2, entity.getDescription());
             preparedStatement.setInt(3, entity.getHours());
             preparedStatement.setDate(4, entity.getBeginDate());
             preparedStatement.setDate(5, entity.getEndDate());
             preparedStatement.setString(6, entity.getCourseType().toString());
 
-            int affectedRows = preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate(); //führt prepared statement aus und gibt anzahl der betroffenen zeilen zurück
 
             if (affectedRows == 0) {
                 return Optional.empty();
             }
 
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys(); //result set mit neu generierten primärschlüsseln
+            if (generatedKeys.next()) { //wenn ein primärschlüssel gefunden wird, wird er zurückgegeben
                 return this.getbyId(generatedKeys.getLong(1));
             } else {
                 return Optional.empty();
