@@ -44,10 +44,9 @@ public class MySqlCourseRepository implements MyCourseRepository {
     }
 
 
-
     @Override
     public Optional<Course> insert(Course entity) { //muss implementiert werden, weil mycourserepository von baserepository erbt
-        Assert.notNull(entity);
+        Assert.notNull(entity); //der angegebene Kurs Parameter darf nicht Null sein
 
         try {
             //Code für das Einfügen von Kursen
@@ -62,7 +61,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
             int affectedRows = preparedStatement.executeUpdate(); //führt prepared statement aus und gibt anzahl der betroffenen zeilen zurück
 
-            if (affectedRows == 0) {
+            if (affectedRows == 0) { //wenn kein Kurs eingefügt wurde, dann erhält man das leere Optional zurück
                 return Optional.empty();
             }
 
@@ -82,7 +81,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
     @Override
     public Optional<Course> getbyId(Long id) {
         Assert.notNull(id);
-        if (countCoursesInDbWithId(id) == 0) {
+        if (countCoursesInDbWithId(id) == 0) { //verwendet CountCoursesInDbWithId um zu prüfen, ob datensatz mit der id existiert
             return Optional.empty();
         } else {
             try {
@@ -92,7 +91,7 @@ public class MySqlCourseRepository implements MyCourseRepository {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 resultSet.next();
-                Course course = new Course(
+                Course course = new Course( //Kurs anhand der erhaltenen Werte aus der Datenbank erstellen
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("description"),
@@ -113,14 +112,14 @@ public class MySqlCourseRepository implements MyCourseRepository {
         }
     }
 
-    private int countCoursesInDbWithId(Long id) {
+    private int countCoursesInDbWithId(Long id) { // Zählen der Kurse in der Datenbank mithilfe der id
         try {
             String countSql = "SELECT COUNT(*) FROM `courses` WHERE `id` = ?";
             PreparedStatement preparedStatementCount = con.prepareStatement(countSql);
             preparedStatementCount.setLong(1, id);
             ResultSet resultSetCount = preparedStatementCount.executeQuery();
-            resultSetCount.next();
-            int courseCount = resultSetCount.getInt(1);
+            resultSetCount.next(); // springt zum nächsten Datensatz, falls er nicht null ist
+            int courseCount = resultSetCount.getInt(1); // Anzahl der Kurse zurückgeben
             return courseCount;
         } catch (SQLException sqlException) {
             throw new DatabaseException(sqlException.getMessage());
@@ -196,13 +195,13 @@ public class MySqlCourseRepository implements MyCourseRepository {
     public void deletebyId(Long id) {
         Assert.notNull(id);
         String sql = "DELETE from courses WHERE id = ?";
-        if(countCoursesInDbWithId(id) == 1) {
+        if (countCoursesInDbWithId(id) == 1) {
 
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
                 preparedStatement.setLong(1, id);
                 preparedStatement.executeUpdate();
-            }catch (SQLException sqlException) {
+            } catch (SQLException sqlException) {
                 throw new DatabaseException(sqlException.getMessage());
             }
         }
@@ -212,14 +211,14 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
     @Override
     public List<Course> findAllCoursesByNameOrDescription(String searchText) {
-        try{
+        try {
             String sql = "SELECT * FROM courses WHERE LOWER(description) LIKE LOWER(?) OR LOWER(name) LIKE LOWER(?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, "%"+searchText+"%");
-            preparedStatement.setString(2, "%"+searchText+"%");
+            preparedStatement.setString(1, "%" + searchText + "%");
+            preparedStatement.setString(2, "%" + searchText + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<Course> courseList = new ArrayList<>();
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 courseList.add(new Course(
                         resultSet.getLong("id"),
                         resultSet.getString("name"),
@@ -232,11 +231,12 @@ public class MySqlCourseRepository implements MyCourseRepository {
                 ));
             }
             return courseList;
-        }catch (SQLException sqlException){
+        } catch (SQLException sqlException) {
             throw new DatabaseException(sqlException.getMessage());
         }
 
-}
+    }
+
     @Override
     public List<Course> findAllRunningCourses() {
         String sql = "SELECT * FROM courses WHERE NOW()<enddate";
@@ -258,15 +258,13 @@ public class MySqlCourseRepository implements MyCourseRepository {
                 ));
             }
             return courseList;
-        }
-        catch (SQLException sqlException){
-            throw new DatabaseException("Datenbankfehler: "+sqlException.getMessage());
+        } catch (SQLException sqlException) {
+            throw new DatabaseException("Datenbankfehler: " + sqlException.getMessage());
 
         }
 
 
-
-}
+    }
 
 
 }

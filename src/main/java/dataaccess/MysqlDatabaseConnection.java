@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MysqlDatabaseConnection {
+
+    //Verwendung von Singleton Pattern, damit nur eine Connection verwendet wird
     private static Connection con = null;
 
     private MysqlDatabaseConnection() {

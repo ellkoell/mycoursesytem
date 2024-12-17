@@ -1,6 +1,7 @@
 package domain;
 
-public abstract class BaseEntity {
+public abstract class BaseEntity { //sozusagen Unterklasse die die Grundteile für alle Entitäten festlegt, also
+                                    //jede Entität braucht ID
     private Long id;
 
     public BaseEntity(Long id) {
@@ -15,7 +16,7 @@ public abstract class BaseEntity {
         if (id==null || id>=0){
             this.id = id;
         }else {
-            throw new InvalidValueException("Kurs-ID muss größer gleich 0 sein");
+            throw new InvalidValueException("Entität-ID muss größer gleich 0 sein");
         }
     }
 

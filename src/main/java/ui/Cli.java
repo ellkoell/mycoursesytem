@@ -3,6 +3,7 @@ package ui;
 import dataaccess.DatabaseException;
 import dataaccess.MyCourseRepository;
 import dataaccess_student.MySqlStudentRepository;
+import dataaccess_student.MyStudentRepository;
 import domain.Course;
 import domain.CourseType;
 import domain.InvalidValueException;
@@ -16,16 +17,16 @@ import java.util.Scanner;
 public class Cli {
     private Scanner scan;
     private MyCourseRepository courseRepo;
-    private MySqlStudentRepository studentRepo;
+    private MyStudentRepository studentRepo;
 
-    public Cli(MyCourseRepository courseRepo, MySqlStudentRepository studentRepo) {
+    public Cli(MyCourseRepository courseRepo, MyStudentRepository studentRepo) {
         this.scan = new Scanner(System.in);
         this.courseRepo = courseRepo;
         this.studentRepo = studentRepo;
     }
 
     public void start() {
-        String input = "-";
+        String input = "-"; //variable für benutzereingaben, wird je nach eingabe aktualisiert
         while (!input.equals("x")) {
             showMenue();
             input = scan.nextLine();
@@ -43,10 +44,11 @@ public class Cli {
                 case "8": addStudent(); break;
                 case "9": findStudentById(); break;
                 case "10": findStudentByName(); break;
+                case "11": findStudentByYear(); break;
 
 
                 case "x": System.out.println("Auf Wiedersehen"); break;
-                default: inputError(); break;
+                default: inputError(); break; //wenn keiner der case variablen zutrifft, wird inputError ausgeführt
             }
         }
         scan.close();
@@ -61,7 +63,7 @@ public class Cli {
 
 
         System.out.println("(8) Student hinzufügen \t (9) Student laut ID suchen");
-        System.out.println("(10) Student nach Name suchen");
+        System.out.println("(10) Student nach Name suchen \t (11) Student laut Geburtsjahr suchen" );
 
         System.out.println("(x) Beenden");
 
@@ -172,6 +174,26 @@ public class Cli {
         List<Student> studentList;
         try {
             studentList = studentRepo.findStudentByName(searchName);
+            for (Student student : studentList) {
+                System.out.println(student);
+            }
+
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler bei der Studentensuche: " + databaseException.getMessage());
+
+        } catch (Exception exception) {
+
+            System.out.println("Unbekannter Fehler bei der Studentensuche: " + exception.getMessage());
+        }
+    }
+
+
+    private void findStudentByYear() {
+        System.out.print("Geburtsjahr? ");
+        String year = scan.nextLine();
+        List<Student> studentList;
+        try {
+            studentList = studentRepo.findStudentByGeburtsjahr(Integer.parseInt(year));
             for (Student student : studentList) {
                 System.out.println(student);
             }
